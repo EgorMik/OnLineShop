@@ -18,5 +18,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\OnLineShop.Infrastructure\OnLineShop.Infrastructure.csproj" />
+  </ItemGroup>
+
 
 </Project>

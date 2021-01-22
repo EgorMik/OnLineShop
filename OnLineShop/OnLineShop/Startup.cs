@@ -11,7 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using OnLineShop.Data;
+using OnLineShop.Core.Interfaces;
+using OnLineShop.Infrastructure.Data;
 
 namespace OnLineShop
 {
@@ -28,6 +29,7 @@ namespace OnLineShop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddControllers();
            // services.AddDbContext<StoreContext>(x =>
                 // x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
