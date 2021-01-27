@@ -2,7 +2,7 @@
 
 namespace OnLineShop.Infrastructure.Migrations
 {
-    public partial class IM : Migration
+    public partial class IMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

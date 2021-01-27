@@ -90,13 +90,13 @@ namespace OnLineShop.Infrastructure.Migrations
             modelBuilder.Entity("OnLineShop.Core.Entities.Product", b =>
                 {
                     b.HasOne("OnLineShop.Core.Entities.ProductBrand", "ProductBrands")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ProductBrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OnLineShop.Core.Entities.ProductType", "ProductTypes")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

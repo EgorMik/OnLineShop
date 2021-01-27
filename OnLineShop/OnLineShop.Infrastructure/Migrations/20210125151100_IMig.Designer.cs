@@ -9,8 +9,8 @@ using OnLineShop.Infrastructure.Data;
 namespace OnLineShop.Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20210122130609_IM")]
-    partial class IM
+    [Migration("20210125151100_IMig")]
+    partial class IMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,13 +92,13 @@ namespace OnLineShop.Infrastructure.Migrations
             modelBuilder.Entity("OnLineShop.Core.Entities.Product", b =>
                 {
                     b.HasOne("OnLineShop.Core.Entities.ProductBrand", "ProductBrands")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ProductBrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OnLineShop.Core.Entities.ProductType", "ProductTypes")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("ProductTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
