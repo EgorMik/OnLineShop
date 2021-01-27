@@ -40,17 +40,7 @@ namespace OnLineShop.Controllers
             var spec = new ProductsWithTypesAndBrandsSpecification();
             var products = await _productRepo.ListAsync(spec);
 
-            return products.Select(product => new ProductToReturnDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                PictureUrl = product.PictureUrl,
-                Price = product.Price,
-                ProductBrands = product.ProductBrands.Name,
-                ProductTypes = product.ProductTypes.Name
-
-            }).ToList();
+            return Ok(_mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
         }
 
         [HttpGet("{id}")]
