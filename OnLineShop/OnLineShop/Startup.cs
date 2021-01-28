@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using OnLineShop.Core.Interfaces;
 using OnLineShop.Helpers;
 using OnLineShop.Infrastructure.Data;
+using StackExchange.Redis;
 
 namespace OnLineShop
 {
@@ -35,16 +36,30 @@ namespace OnLineShop
                  .AddNewtonsoftJson(options =>
                   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBasketRepository, BasketRepository>();
+
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+
             services.AddAutoMapper(typeof(MappingProfiles));
+
             services.AddControllers();
+
             services.AddDbContext<StoreContext>(options =>
                 options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
+
+                var configuration = ConfigurationOptions.Parse(_config
+                    .GetConnectionString("Redis"), true);
+                return ConnectionMultiplexer.Connect(configuration);
+            });
+
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolisy", policy =>
                 {
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:42000");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:44386");
                 });
             });
         }

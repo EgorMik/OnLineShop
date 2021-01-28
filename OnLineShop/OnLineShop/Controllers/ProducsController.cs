@@ -14,9 +14,8 @@ using System.Threading.Tasks;
 
 namespace OnLineShop.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductsController : ControllerBase
+   
+    public class ProductsController : BaseApiController
     {
 
        
