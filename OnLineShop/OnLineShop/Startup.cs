@@ -38,10 +38,15 @@ namespace OnLineShop
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-           // services.AddDbContext<StoreContext>(x =>
-                // x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
             services.AddDbContext<StoreContext>(options =>
                 options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolisy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:42000");
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +62,7 @@ namespace OnLineShop
             app.UseRouting();
 
             app.UseStaticFiles();
+            app.UseCors("CorsPolisy");
 
             app.UseAuthorization();
 

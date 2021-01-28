@@ -19,8 +19,7 @@ namespace OnLineShop.Infrastructure.Data
         public async Task<IReadOnlyList<Product>> GetProductAsync()
         {
 
-            //var typeId = 1;
-            //var products = _context.Products.Where(x => x.ProductTypeId == typeId).Include(x => x.ProductTypes).ToListAsync();
+         
             return await _context.Products
                 .Include(p => p.ProductTypes)
                 .Include(p => p.ProductBrands)
