@@ -13,8 +13,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OnLineShop.Core.Interfaces;
+using OnLineShop.Extensions;
 using OnLineShop.Helpers;
 using OnLineShop.Infrastructure.Data;
+using OnLineShop.Infrastructure.Identity;
+using OnLineShop.Infrastructure.Services;
 using StackExchange.Redis;
 
 namespace OnLineShop
@@ -35,6 +38,8 @@ namespace OnLineShop
             services.AddControllersWithViews()
                  .AddNewtonsoftJson(options =>
                   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IBasketRepository, BasketRepository>();
 
@@ -47,6 +52,9 @@ namespace OnLineShop
             services.AddDbContext<StoreContext>(options =>
                 options.UseSqlServer(_config.GetConnectionString("DefaultConnection")));
 
+            services.AddDbContext<AppIdentityDbContext>(x =>
+             x.UseSqlServer(_config.GetConnectionString("IdentityConnection")));
+
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
 
@@ -55,6 +63,7 @@ namespace OnLineShop
                 return ConnectionMultiplexer.Connect(configuration);
             });
 
+            services.AddIdentityServices(_config);
             services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolisy", policy =>
@@ -79,6 +88,7 @@ namespace OnLineShop
             app.UseStaticFiles();
             app.UseCors("CorsPolisy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
