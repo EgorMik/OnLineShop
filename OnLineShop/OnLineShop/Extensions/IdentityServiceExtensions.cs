@@ -33,6 +33,7 @@ namespace OnLineShop.Extensions
                             Encoding.UTF8.GetBytes(config["Token:Key"])),
                         ValidIssuer = config["Token:Issuer"],
                         ValidateIssuer = true,
+                        ValidateAudience = false
                     };
                 });
 
