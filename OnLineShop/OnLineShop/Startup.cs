@@ -13,11 +13,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OnLineShop.Core.Interfaces;
+using OnLineShop.Error;
 using OnLineShop.Extensions;
 using OnLineShop.Helpers;
 using OnLineShop.Infrastructure.Data;
 using OnLineShop.Infrastructure.Identity;
 using OnLineShop.Infrastructure.Services;
+using OnLineShop.Middleware;
 using StackExchange.Redis;
 
 namespace OnLineShop
@@ -54,7 +56,29 @@ namespace OnLineShop
 
             services.AddDbContext<AppIdentityDbContext>(x =>
              x.UseSqlServer(_config.GetConnectionString("IdentityConnection")));
+            services.AddSwaggerGen(c =>
+               {
+                   c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "SKiNet API", Version = "v1" });
+               });
+            services.Configure<ApiBehaviorOptions>(options => 
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState
+                    .Where(e => e.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage).ToArray();
+                    var errorResponse = new ApiValidationErrorResponse
+                    {
+                        Errors = errors
 
+                    };
+                    return new BadRequestObjectResult(errorResponse);
+
+
+                };
+            
+            });
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
 
@@ -76,21 +100,21 @@ namespace OnLineShop
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseMiddleware<ExceptionMiddleware>();
 
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
+           
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
             app.UseStaticFiles();
             app.UseCors("CorsPolisy");
-
             app.UseAuthentication();
             app.UseAuthorization();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => { c
+                .SwaggerEndpoint("/swagger/v1/swagger.json", "SkiNet API v1"); });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

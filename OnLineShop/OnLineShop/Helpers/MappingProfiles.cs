@@ -18,6 +18,8 @@ namespace OnLineShop.Helpers
                 .ForMember(d => d.ProductTypes, o => o.MapFrom(s => s.ProductTypes.Name))
                 .ForMember(d => d.PictureUrl, o => o.MapFrom<ProductUrlResolve>());
             CreateMap<Adress, AdressDto>().ReverseMap();
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<BasketItemDto, BasketItem>();
         }
     }
 }
