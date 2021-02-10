@@ -42,11 +42,8 @@ namespace OnLineShop
                   options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IProductRepository, ProductRepository>();
+           
             services.AddScoped<IBasketRepository, BasketRepository>();
-
-            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
-
             services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddControllers();
@@ -56,29 +53,9 @@ namespace OnLineShop
 
             services.AddDbContext<AppIdentityDbContext>(x =>
              x.UseSqlServer(_config.GetConnectionString("IdentityConnection")));
-            services.AddSwaggerGen(c =>
-               {
-                   c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "SKiNet API", Version = "v1" });
-               });
-            services.Configure<ApiBehaviorOptions>(options => 
-            {
-                options.InvalidModelStateResponseFactory = actionContext =>
-                {
-                    var errors = actionContext.ModelState
-                    .Where(e => e.Value.Errors.Count > 0)
-                    .SelectMany(x => x.Value.Errors)
-                    .Select(x => x.ErrorMessage).ToArray();
-                    var errorResponse = new ApiValidationErrorResponse
-                    {
-                        Errors = errors
+            services.AddAplicationServices();
+            services.AddSwaggerDocumentation();
 
-                    };
-                    return new BadRequestObjectResult(errorResponse);
-
-
-                };
-            
-            });
             services.AddSingleton<IConnectionMultiplexer>(c =>
             {
 
@@ -112,9 +89,7 @@ namespace OnLineShop
             app.UseCors("CorsPolisy");
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseSwagger();
-            app.UseSwaggerUI(c => { c
-                .SwaggerEndpoint("/swagger/v1/swagger.json", "SkiNet API v1"); });
+            app.UseSwaggerDocumentation();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
