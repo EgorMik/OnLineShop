@@ -19,8 +19,8 @@ namespace OnLineShop.DTO
         public decimal Price { get; set; }
 
         [Required]
-        [Range(1, double.MaxValue, ErrorMessage = "Quantity must be at least 1")]
-        public int Qantity { get; set; }
+        [Range(2, int.MaxValue, ErrorMessage = "Quantity must be at least 1")]
+        public int Quantity { get; set; }
 
         [Required]
         public string PictureUrl { get; set; }
