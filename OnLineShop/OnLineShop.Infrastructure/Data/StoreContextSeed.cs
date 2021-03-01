@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using OnLineShop.Core.Entities;
+using OnLineShop.Core.Entities.OrderAggregate;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -54,8 +55,19 @@ namespace OnLineShop.Infrastructure.Data
                     }
                     await context.SaveChangesAsync();
                 }
+                if (!context.DeliveryMethods.Any())
+                {
 
-            
+                    var dmData =
+                        File.ReadAllText("../OnLineShop.Infrastructure/Data/SeedData/delivery.json");
+                    var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
+                    foreach (var item in methods)
+                    {
+                        context.DeliveryMethods.Add(item);
+                    }
+                    await context.SaveChangesAsync();
+                }
+
 
             }
             catch (Exception ex)
